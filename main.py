@@ -1,13 +1,14 @@
 # \venv\Scripts\activate
 
 #python
+from dataclasses import field
 import imp
 from typing import Optional
 from enum import Enum
 
 
 #Pydantic
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr, PaymentCardNumber, HttpUrl
 
 #FASTAPI
 from fastapi import FastAPI, Query
@@ -25,32 +26,78 @@ class HairColor(Enum):
     red = "red"
 
 class Location(BaseModel):
-    city: str
-    state: str
-    country: str
+    city: str = Field(
+        ..., 
+        min_length= 1,
+        max_length= 115
+        )
+    state: str = Field(
+        ..., 
+        min_length= 1,
+        max_length= 115
+        )
+    country: str = Field(
+        ..., 
+        min_length= 1,
+        max_length= 115
+        )
 
 class Person(BaseModel):
     first_name: str = Field(
         ..., 
         min_length= 1,
-        max_length= 50
+        max_length= 50,
+        example = "Michelle"
         )
     last_name: str = Field(
         ..., 
         min_length= 1,
-        max_length= 50
+        max_length= 50,
+        example = "Duque"
         )
     age: int = Field(
         ...,
         gt=0,
-        le=115
+        le=115,
+        example = 27
     )
     hair_color: Optional[HairColor] = Field(
-        default=None
+        default=None,
+        example = "black"
     )
     is_married: Optional[bool] = Field(
-        default= None
+        default= None,
+        example = False
     )
+    email: EmailStr = Field(
+        ...,
+        min_length=1,
+        example = "michelle@gmail.com"
+    )
+    payment_card_number: PaymentCardNumber = Field(
+        ...,
+        min_length=1,
+        example = 53534523
+    )
+    httpurl: Optional[HttpUrl] = field(
+        default=None,
+        example = "https://twitter.com/home"
+    )
+
+    # class Config:
+    #     schema_extra = {
+    #         "Facundo": {
+    #             "first_name": "Facundo",
+    #             "last_name": "Garcia Martoni",
+    #             "age": 21,
+    #             "hair_color": "blonde",
+    #             "is_married": False,
+    #             "email": "facundo@gmail.com",
+    #             "payment_card_number": 43244564563453,
+    #             "httpurl": "https://platzi.com/"
+    #         }
+    #     }
+
 
 @app.get("/")
 def home():
