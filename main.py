@@ -29,17 +29,20 @@ class Location(BaseModel):
     city: str = Field(
         ..., 
         min_length= 1,
-        max_length= 115
+        max_length= 115,
+        example = "Barranquilla"
         )
     state: str = Field(
         ..., 
         min_length= 1,
-        max_length= 115
+        max_length= 115,
+        example = "Atlantico"
         )
     country: str = Field(
         ..., 
         min_length= 1,
-        max_length= 115
+        max_length= 115,
+        example = "Colombia"
         )
 
 class Person(BaseModel):
@@ -117,12 +120,14 @@ def show_person(
         min_length=1, 
         max_length=50,
         title="Person name",
-        description="This is the person name. It's between 1 and 50 characters"
+        description="This is the person name. It's between 1 and 50 characters",
+        example= "Rocío"
         ),
     age: str = Query(
         ...,
         title="Person age",
-        description="This is the person age. It's required."
+        description="This is the person age. It's required.",
+        example= 25
         )
 ):
     return{name: age}
@@ -136,7 +141,8 @@ def show_person(
         ..., 
         gt=0,
         title="Person ID",
-        description="This is the person ID. It's required and must be greater than 0."
+        description="This is the person ID. It's required and must be greater than 0.",
+        example= 123
         )
 ):
     return{person_id: "It exits!"}
@@ -149,7 +155,8 @@ def update_person(
         ...,
         title="Person ID",
         description="This is the person ID",
-        gt=0
+        gt=0,
+        example= 123
     ),
     person: Person = Body(
         ...
