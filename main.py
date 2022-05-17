@@ -2,6 +2,7 @@
 # .\venv\Scripts\activate
 
 #Python
+from doctest import Example
 from typing import Optional
 from enum import Enum
 
@@ -11,7 +12,7 @@ from pydantic import Field
 
 #FastAPI
 from fastapi import FastAPI, status
-from fastapi import Body, Query, Path
+from fastapi import Body, Query, Path, Form
 
 app = FastAPI()
 
@@ -72,6 +73,12 @@ class Person(personBase):
 
 class PersonOut(personBase): 
     pass
+
+
+class LoginOut(BaseModel):
+    username: str = Field(..., max_length=20, example = "miguel2021")
+    message: str = Field(default="Login Succesfully!")
+
 
 
 @app.get(
@@ -151,3 +158,12 @@ def update_person(
     #results.update(location.dict())
     #return results
     return person
+
+
+@app.post(
+    path="/login",
+    response_model= LoginOut,
+    status_code= status.HTTP_200_OK
+)
+def login(username: str = Form(...), password: str = Form(...)):
+    return LoginOut(username=username)
