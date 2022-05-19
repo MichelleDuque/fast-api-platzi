@@ -2,7 +2,6 @@
 # .\venv\Scripts\activate
 
 #Python
-from doctest import Example
 from typing import Optional
 from enum import Enum
 
@@ -11,7 +10,7 @@ from pydantic import BaseModel, EmailStr
 from pydantic import Field
 
 #FastAPI
-from fastapi import FastAPI, File, Header, UploadFile, status
+from fastapi import FastAPI, File, Header, UploadFile, status, HTTPException
 from fastapi import Body, Query, Path, Form, Header, Cookie, UploadFile, File
 
 app = FastAPI()
@@ -124,6 +123,8 @@ def show_person(
 
 # Validaciones: Path Parameters
 
+persons = [1,2,3,4,5]
+
 @app.get(
     path="/person/detail/{person_id}",
     status_code= status.HTTP_200_OK
@@ -134,7 +135,12 @@ def show_person(
         gt=0,
         example=123
         )
-): 
+):
+    if person_id not in persons:
+            raise HTTPException(
+                status_code= status.HTTP_404_NOT_FOUND,
+                detail= "This person doesn't exist"
+            )
     return {person_id: "It exists!"}
 
 # Validaciones: Request Body
